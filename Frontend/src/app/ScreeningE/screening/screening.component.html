@@ -1,0 +1,648 @@
+<mat-dialog-content class="mat-typography" *ngIf="dataLoaded">
+  <h2 class="headline" style="text-align: center;">ProfileCheck Overview</h2>
+  <mat-card class="example-card">
+    <mat-card-header style="text-align: center;">
+      <div mat-card-avatar class="example-header-image"></div>
+      <mat-card-title class="card-title" >
+        <span class="heading " ><b> Project Id: </b>
+          <span class="title" >{{SoData[0].projectId}}</span></span>
+        &nbsp;&nbsp;
+        <span class="heading"><b> JR Code: </b>
+          <span class="title">{{SoData[0].jrCode}}</span></span>
+        <br><br>
+        <span class="heading">
+          <div class="period-selection">
+            <mat-label class="period-label">Period :</mat-label>
+            <mat-form-field class="period" appearance="outline">
+              <mat-select #periodRef [(ngModel)]="selectedOption" placeholder="Select Period" (ngModelChange)="onSelectionChange()">
+                <mat-option value="Default">Total Data</mat-option>
+                <mat-option value="Weekly">Weekly</mat-option>
+                <mat-option value="Monthly">Monthly</mat-option>
+                <mat-option value="Fortnight">Fortnight</mat-option>
+                
+              </mat-select>
+              
+            </mat-form-field>
+           
+            
+          </div>
+        
+        </span>
+         
+        <br><br>
+        <span>
+           
+          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-date-range-picker touchUi="true" #picker  (closed)="onDatePickerClosed()" ></mat-date-range-picker>
+          <div class="displaydate">
+            <mat-form-field>
+              <mat-date-range-input [rangePicker]="picker" (ngModelChange)="change($event)">
+                <input matStartDate [(ngModel)]="fromDate">
+                <input #date matEndDate [(ngModel)]="endDate">
+              </mat-date-range-input>
+              <button *ngIf="date.value" matSuffix color="warn" mat-icon-button (click)="clearDates()">
+                <mat-icon>clear</mat-icon>
+              </button>
+            </mat-form-field>
+          </div>
+        </span>
+       
+      </mat-card-title>
+   
+      <mat-divider></mat-divider>
+      <mat-card-title style="padding-top: 20px; font-size: medium; display: flex; justify-content: space-between; ">
+        <span style="text-align: left; padding-right: 100px;"   [ngStyle]="{'cursor': totalScreeningData[0].totalProfilesTagged > 0 ? 'pointer' : 'text'}"
+          (click)="(totalScreeningData[0].totalProfilesTagged) > 0?PopUpForTotalProfiles():null"><b>Total No.of profiles Tagged: </b><span
+            style="font-weight: 400; font-size: 20px; color: black;" ><b>
+              {{totalScreeningData[0].totalProfilesTagged }}
+            </b></span></span>&nbsp;&nbsp;
+        <span ><b>Total No.of Profiles Rejected: </b><span
+            style="font-weight: 400; font-size: 20px; color: black;"><b>{{totalScreeningData[0].totalProfilesRejected}}</b></span></span>
+            <span class="heading DATETYPE" *ngIf="fromDate !== undefined" style="font-size: medium;margin-left: 50px;">{{ fromDate | date: 'dd-MM-yyyy' }} - {{ endDate | date: 'dd-MM-yyyy' }} </span>
+      </mat-card-title>
+
+    </mat-card-header>
+    <mat-card-content>
+      <mat-dialog-content class="mat-typography" *ngIf="dataLoaded">
+
+        <!-- <mat-card class="example-card"> -->
+        <br>
+
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr>
+            <!-- <th scope="col">Total Profiles Tagged</th> -->
+              <th scope="col">Screening Selected</th>
+              <th scope="col">Screening Rejected</th>
+              <!-- <th scope="col">Screening Hold</th> -->
+              <th scope="col">L1 Selected</th>
+              <th scope="col">L1 Rejected</th>
+              <th scope="col">L1 Hold</th>
+              <th scope="col">L2 Selected</th>
+              <th scope="col">L2 Rejected</th>
+              <th scope="col">L2 Hold</th>
+              
+              <th scope="col">Offer Accepted</th>
+              <th scope="col">Offer Rejected</th>
+              <th scope="col">InProgress</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              
+              <!-- <td [ngStyle]="{'cursor': totalScreeningData[0].totalProfilesTagged > 0 ? 'pointer' : 'text'}"
+                (click)="(totalScreeningData[0].totalProfilesTagged) > 0?PopUpForTotalProfiles():null">
+                {{totalScreeningData[0].totalProfilesTagged}}
+              </td> -->
+
+
+              <td [ngStyle]="{'cursor': totalScreeningData[0].screeningSelected > 0 ? 'pointer' : 'text'}"
+                (click)="(totalScreeningData[0].screeningSelected)>0?PopUpForScreeningSelected():null" >
+                {{totalScreeningData[0].screeningSelected}}
+              </td>
+
+              <td [ngStyle]="{'cursor': totalScreeningData[0].screeningrejceted > 0 ? 'pointer' : 'text'}"
+                (click)="totalScreeningData[0].screeningrejceted > 0?PopUpForScreeningRejected():null">
+                {{totalScreeningData[0].screeningrejceted}}
+              </td>
+<!-- 
+             <td [ngStyle]="{'cursor': totalScreeningData[0].screeningONhold > 0 ? 'pointer' : 'text'}"
+             (click)="totalScreeningData[0].screeningONhold > 0?PopUpForL1Selected():null">
+             {{totalScreeningData[0].screeningONhold}}</td> -->
+
+              <td [ngStyle]="{'cursor': totalScreeningData[0].l1selected > 0 ? 'pointer' : 'text'}"
+                (click)="totalScreeningData[0].l1selected > 0?PopUpForL1Selected():null">
+                {{totalScreeningData[0].l1selected}}</td>
+
+                <td [ngStyle]="{'cursor': totalScreeningData[0].l1rejected > 0 ? 'pointer' : 'text'}"
+                  (click)="totalScreeningData[0].l1rejected > 0?PopUpForL1Rejected():null">
+                  {{totalScreeningData[0].l1rejected}}</td>
+
+
+                  <td [ngStyle]="{'cursor': totalScreeningData[0].l1OnHold > 0 ? 'pointer' : 'text'}"
+                    (click)="totalScreeningData[0].l1OnHold > 0?PopUpForL1Onhold():null">
+                    {{totalScreeningData[0].l1OnHold}}
+                  </td>
+    
+
+              <td [ngStyle]="{'cursor': totalScreeningData[0].l2selected > 0 ? 'pointer' : 'text'}"
+                (click)="totalScreeningData[0].l2selected>0?PopUpForL2Selected():null">
+                {{totalScreeningData[0].l2selected}}</td>
+           
+           
+             
+              <td [ngStyle]="{'cursor': totalScreeningData[0].l2rejceted > 0 ? 'pointer' : 'text'}"
+                (click)="totalScreeningData[0].l2rejceted > 0?PopUpForL2Rejected():null">
+                {{totalScreeningData[0].l2rejceted}}</td>
+
+
+
+                <td [ngStyle]="{'cursor': totalScreeningData[0].l2OnHold > 0 ? 'pointer' : 'text'}"
+                  (click)="totalScreeningData[0].l2OnHold > 0?PopUpForL2OnHold():null">
+                  {{totalScreeningData[0].l2OnHold}}
+                </td>
+
+
+                <td [ngStyle]="{'cursor': totalScreeningData[0].offerAccepted > 0 ? 'pointer' : 'text'}"
+                  (click)="totalScreeningData[0].offerAccepted > 0?PopUpForofferAccepted():null">
+                  {{totalScreeningData[0].offerAccepted}}</td>
+
+
+                  <td [ngStyle]="{'cursor': totalScreeningData[0].offerRejected > 0 ? 'pointer' : 'text'}"
+                    (click)="totalScreeningData[0].offerRejected > 0?PopUpForofferRejected():null">
+                    {{totalScreeningData[0].offerRejected}}</td>
+
+                    <td [ngStyle]="{'cursor': totalScreeningData[0].inProgress > 0 ? 'pointer' : 'text'}"
+                      (click)="totalScreeningData[0].inProgress > 0?PopUpForInProgress():null">
+                      {{totalScreeningData[0].inProgress}}</td>
+          
+              
+            </tr>
+          </tbody>
+        </table>
+
+
+
+
+
+
+      </mat-dialog-content>
+    </mat-card-content>
+
+  </mat-card>
+
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Close</button>
+</mat-dialog-actions>
+
+
+<ng-template #modalPopUpForScreeningSelected>
+  <div class="modal-container">
+
+    <div class="table-container">
+
+      <div class="example-container mat-elevation-z8">
+        <div class="example-header">
+          <mat-form-field>
+            <input #inputFilter matInput class="small-filter-input"
+              (keyup)="applyFilterScreeningSelected(inputFilter.value)" placeholder="Filter">
+
+          </mat-form-field>
+        </div>
+
+        <mat-table #table [dataSource]="ScreeningSelecteddataSource">
+
+          <ng-container matColumnDef="CandidateUID">
+            <mat-header-cell *matHeaderCellDef> CandidateUID. </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.candidateUid}} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="CandidateName">
+            <mat-header-cell *matHeaderCellDef> CandidateName </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.candidateName}} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="OnBoardingDate">
+            <mat-header-cell *matHeaderCellDef> OnBoardingDate </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.mappingDate | date: 'dd-MM-yyyy'}} </mat-cell>
+          </ng-container>
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
+      </div>
+
+    </div>
+    <!-- </mat-card-content> -->
+  </div>
+</ng-template>
+
+
+<ng-template #modalPopUpForScreeningRejected>
+  <div class="modal-container">
+    <!-- <h1>Job Description</h1> -->
+    <!-- <mat-card-content> -->
+    <div class="table-container">
+
+      <div class="example-container mat-elevation-z8">
+        <div class="example-header">
+          <mat-form-field>
+            <input #inputFilter matInput (keyup)="applyFilterScreeningRejected(inputFilter.value)" placeholder="Filter">
+          </mat-form-field>
+        </div>
+
+        <mat-table #table [dataSource]="ScreeningRejecteddataSource">
+
+          <ng-container matColumnDef="CandidateUID">
+            <mat-header-cell *matHeaderCellDef> CandidateUID. </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.candidateUid}} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="CandidateName">
+            <mat-header-cell *matHeaderCellDef> CandidateName </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.candidateName}} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="OnBoardingDate">
+            <mat-header-cell *matHeaderCellDef> OnBoardingDate </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.mappingDate | date: 'dd-MM-yyyy'}} </mat-cell>
+          </ng-container>
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
+      </div>
+
+    </div>
+    <!-- </mat-card-content> -->
+  </div>
+</ng-template>
+
+
+
+<ng-template #modalPopUpForL1Selected>
+  <div class="modal-container">
+    <!-- <h1>Job Description</h1> -->
+    <!-- <mat-card-content> -->
+    <div class="table-container">
+
+      <div class="example-container mat-elevation-z8">
+        <div class="example-header">
+          <mat-form-field>
+            <input #inputFilter matInput (keyup)="applyFilterL1Selected(inputFilter.value)" placeholder="Filter">
+          </mat-form-field>
+        </div>
+
+        <mat-table #table [dataSource]="L1SelecteddataSource">
+
+          <ng-container matColumnDef="CandidateUID">
+            <mat-header-cell *matHeaderCellDef> CandidateUID. </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.candidateUid}} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="CandidateName">
+            <mat-header-cell *matHeaderCellDef> CandidateName </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.candidateName}} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="OnBoardingDate">
+            <mat-header-cell *matHeaderCellDef> OnBoardingDate </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.mappingDate | date: 'dd-MM-yyyy'}} </mat-cell>
+          </ng-container>
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
+      </div>
+
+    </div>
+    <!-- </mat-card-content> -->
+  </div>
+</ng-template>
+
+
+<ng-template #modalPopUpForL1Rejected>
+  <div class="modal-container">
+    <!-- <h1>Job Description</h1> -->
+    <!-- <mat-card-content> -->
+    <div class="table-container">
+
+      <div class="example-container mat-elevation-z8">
+        <div class="example-header">
+          <mat-form-field>
+            <input #inputFilter matInput (keyup)="applyFilterL1Rejected(inputFilter.value)" placeholder="Filter">
+          </mat-form-field>
+        </div>
+
+        <mat-table #table [dataSource]="L1RejecteddataSource">
+
+          <ng-container matColumnDef="CandidateUID">
+            <mat-header-cell *matHeaderCellDef> CandidateUID. </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.candidateUid}} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="CandidateName">
+            <mat-header-cell *matHeaderCellDef> CandidateName </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.candidateName}} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="OnBoardingDate">
+            <mat-header-cell *matHeaderCellDef> OnBoardingDate </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.mappingDate | date: 'dd-MM-yyyy'}} </mat-cell>
+          </ng-container>
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
+      </div>
+
+    </div>
+    <!-- </mat-card-content> -->
+  </div>
+</ng-template>
+
+
+<ng-template #modalPopUpForL2Selected>
+  <div class="modal-container">
+    <!-- <h1>Job Description</h1> -->
+    <!-- <mat-card-content> -->
+    <div class="table-container">
+
+      <div class="example-container mat-elevation-z8">
+        <div class="example-header">
+          <mat-form-field>
+            <input #inputFilter matInput (keyup)="applyFilterL2Selected(inputFilter.value)" placeholder="Filter">
+          </mat-form-field>
+        </div>
+
+        <mat-table #table [dataSource]="L2SelecteddataSource">
+
+          <ng-container matColumnDef="CandidateUID">
+            <mat-header-cell *matHeaderCellDef> CandidateUID. </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.candidateUid}} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="CandidateName">
+            <mat-header-cell *matHeaderCellDef> CandidateName </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.candidateName}} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="OnBoardingDate">
+            <mat-header-cell *matHeaderCellDef> OnBoardingDate </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.mappingDate | date: 'dd-MM-yyyy'}} </mat-cell>
+          </ng-container>
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
+      </div>
+
+    </div>
+    <!-- </mat-card-content> -->
+  </div>
+</ng-template>
+
+
+<ng-template #modalPopUpForL2Rejected>
+  <div class="modal-container">
+    <!-- <h1>Job Description</h1> -->
+    <!-- <mat-card-content> -->
+    <div class="table-container">
+
+      <div class="example-container mat-elevation-z8">
+
+
+        <div class="example-header">
+          <mat-form-field>
+            <input #inputFilter matInput (keyup)="applyFilterL2Rejected(inputFilter.value)" placeholder="Filter">
+          </mat-form-field>
+        </div>
+        <mat-table #table [dataSource]="L2RejecteddataSource">
+
+          <ng-container matColumnDef="CandidateUID">
+            <mat-header-cell *matHeaderCellDef> CandidateUID. </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.candidateUid}} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="CandidateName">
+            <mat-header-cell *matHeaderCellDef> CandidateName </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.candidateName}} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="OnBoardingDate">
+            <mat-header-cell *matHeaderCellDef> OnBoardingDate </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.mappingDate | date: 'dd-MM-yyyy'}} </mat-cell>
+          </ng-container>
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
+
+      </div>
+
+    </div>
+    <!-- </mat-card-content> -->
+  </div>
+</ng-template>
+
+<ng-template #modalPopUpForTotalProfilesTagged>
+  <div class="modal-container">
+    <!-- <h1>Job Description</h1> -->
+    <!-- <mat-card-content> -->
+    <div class="table-container">
+
+      <div class="example-container mat-elevation-z8">
+
+
+        <div class="example-header">
+          <mat-form-field>
+            <input #inputFilter matInput (keyup)="applyFilterTotalProfiles(inputFilter.value)" placeholder="Filter">
+          </mat-form-field>
+        </div>
+        <mat-table #table [dataSource]="TotalProfilesDataSource">
+
+          <ng-container matColumnDef="CandidateUID">
+            <mat-header-cell *matHeaderCellDef> CandidateUID. </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.candidateUid}} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="CandidateName">
+            <mat-header-cell *matHeaderCellDef> CandidateName </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.candidateName}} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="OnBoardingDate">
+            <mat-header-cell *matHeaderCellDef> OnBoardingDate </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.mappingDate | date: 'dd-MM-yyyy'}} </mat-cell>
+          </ng-container>
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
+
+      </div>
+
+    </div>
+    <!-- </mat-card-content> -->
+  </div>
+</ng-template>
+
+<ng-template #modalPopUpForOfferAccepted>
+  <div class="modal-container">
+    <!-- <h1>Job Description</h1> -->
+    <!-- <mat-card-content> -->
+    <div class="table-container">
+
+      <div class="example-container mat-elevation-z8">
+
+
+        <div class="example-header">
+          <mat-form-field>
+            <input #inputFilter matInput (keyup)="applyFilterOfferAccepted(inputFilter.value)" placeholder="Filter">
+          </mat-form-field>
+        </div>
+        <mat-table #table [dataSource]="OfferAccepteddataSource">
+
+          <ng-container matColumnDef="CandidateUID">
+            <mat-header-cell *matHeaderCellDef> CandidateUID. </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.candidateUid}} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="CandidateName">
+            <mat-header-cell *matHeaderCellDef> CandidateName </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.candidateName}} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="OnBoardingDate">
+            <mat-header-cell *matHeaderCellDef> OnBoardingDate </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.mappingDate | date: 'dd-MM-yyyy'}} </mat-cell>
+          </ng-container>
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
+
+      </div>
+
+    </div>
+    <!-- </mat-card-content> -->
+  </div>
+</ng-template>
+
+<ng-template #modalPopUpForOfferDeclined>
+  <div class="modal-container">
+    <!-- <h1>Job Description</h1> -->
+    <!-- <mat-card-content> -->
+    <div class="table-container">
+
+      <div class="example-container mat-elevation-z8">
+
+
+        <div class="example-header">
+          <mat-form-field>
+            <input #inputFilter matInput (keyup)="applyFilterOfferRejected(inputFilter.value)" placeholder="Filter">
+          </mat-form-field>
+        </div>
+        <mat-table #table [dataSource]="OfferDeclineddataSource">
+
+          <ng-container matColumnDef="CandidateUID">
+            <mat-header-cell *matHeaderCellDef> CandidateUID. </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.candidateUid}} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="CandidateName">
+            <mat-header-cell *matHeaderCellDef> CandidateName </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.candidateName}} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="OnBoardingDate">
+            <mat-header-cell *matHeaderCellDef> OnBoardingDate </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.mappingDate | date: 'dd-MM-yyyy'}} </mat-cell>
+          </ng-container>
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
+
+      </div>
+
+    </div>
+    <!-- </mat-card-content> -->
+  </div>
+</ng-template>
+
+
+
+<ng-template #modalL1OnHold>
+  <div class="modal-container">
+    <!-- <h1>Job Description</h1> -->
+    <!-- <mat-card-content> -->
+    <div class="table-container">
+
+      <div class="example-container mat-elevation-z8">
+
+
+        <div class="example-header">
+          <mat-form-field>
+            <input #inputFilter matInput (keyup)="applyFilterL1OnHold(inputFilter.value)" placeholder="Filter">
+          </mat-form-field>
+        </div>
+        <mat-table #table [dataSource]="L1OnHolddataSource">
+
+          <ng-container matColumnDef="CandidateUID">
+            <mat-header-cell *matHeaderCellDef> CandidateUID. </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.candidateUid}} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="CandidateName">
+            <mat-header-cell *matHeaderCellDef> CandidateName </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.candidateName}} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="OnBoardingDate">
+            <mat-header-cell *matHeaderCellDef> OnBoardingDate </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.mappingDate | date: 'dd-MM-yyyy'}} </mat-cell>
+          </ng-container>
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
+
+      </div>
+
+    </div>
+    <!-- </mat-card-content> -->
+  </div>
+</ng-template>
+
+<ng-template #modalL2OnHold>
+  <div class="modal-container">
+    <!-- <h1>Job Description</h1> -->
+    <!-- <mat-card-content> -->
+    <div class="table-container">
+
+      <div class="example-container mat-elevation-z8">
+
+
+        <div class="example-header">
+          <mat-form-field>
+            <input #inputFilter matInput (keyup)="applyFilterL2OnHold(inputFilter.value)" placeholder="Filter">
+          </mat-form-field>
+        </div>
+        <mat-table #table [dataSource]="L2OnHolddataSource">
+
+          <ng-container matColumnDef="CandidateUID">
+            <mat-header-cell *matHeaderCellDef> CandidateUID. </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.candidateUid}} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="CandidateName">
+            <mat-header-cell *matHeaderCellDef> CandidateName </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.candidateName}} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="OnBoardingDate">
+            <mat-header-cell *matHeaderCellDef> OnBoardingDate </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.mappingDate | date: 'dd-MM-yyyy'}} </mat-cell>
+          </ng-container>
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
+
+      </div>
+
+    </div>
+    <!-- </mat-card-content> -->
+  </div>
+</ng-template>
+
+
+<ng-template #modalInProgress>
+  <div class="modal-container">
+    <!-- <h1>Job Description</h1> -->
+    <!-- <mat-card-content> -->
+    <div class="table-container">
+
+      <div class="example-container mat-elevation-z8">
+
+
+        <div class="example-header">
+          <mat-form-field>
+            <input #inputFilter matInput (keyup)="applyFilterInprogress(inputFilter.value)" placeholder="Filter">
+          </mat-form-field>
+        </div>
+        <mat-table #table [dataSource]="InProgressdataSource">
+
+          <ng-container matColumnDef="CandidateUID">
+            <mat-header-cell *matHeaderCellDef> CandidateUID. </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.candidateUid}} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="CandidateName">
+            <mat-header-cell *matHeaderCellDef> CandidateName </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.candidateName}} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="OnBoardingDate">
+            <mat-header-cell *matHeaderCellDef> OnBoardingDate </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.mappingDate | date: 'dd-MM-yyyy'}} </mat-cell>
+          </ng-container>
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
+
+      </div>
+
+    </div>
+    <!-- </mat-card-content> -->
+  </div>
+</ng-template>

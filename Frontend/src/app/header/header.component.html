@@ -1,0 +1,203 @@
+<!-- <mat-toolbar class="toolbar-main">
+  <button *ngIf="!IsfirstLogin" #toolbarbutton mat-icon-button (click)="drawer.toggle()"
+    aria-label="Example icon-button with menu icon">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <span class="ustlogo"><img src="../../assets/ustlogo.png"></span>
+  <span class="sowimg"><img src="../../assets/ust_cropped.png"></span>
+
+
+  <div class="nav-item" *ngIf="!IsfirstLogin">
+    <button *ngIf="dashboard" mat-button id="item1" routerLink="/dashboard">
+      <div class="icon-container">
+        <mat-icon class="small-icon">computer</mat-icon>
+      </div>
+      <span>Dashboard</span>
+    </button>
+    <button *ngIf="sow" mat-button id="item2" routerLink="/sow">
+      <div class="icon-container">
+        <mat-icon class="small-icon">explore</mat-icon>
+      </div>
+      <span>SO</span>
+    </button>
+
+    <button *ngIf="candidatedetails" mat-button id="item4" routerLink="/candidatedetails">
+      <div class="icon-container">
+        <mat-icon class="small-icon">person</mat-icon>
+      </div>
+      <span>Candidate</span>
+    </button>
+    <button *ngIf="mapping" mat-button id="item3" routerLink="/mapping">
+      <div class="icon-container">
+        <mat-icon class="small-icon">group_work</mat-icon>
+      </div>
+      <span>Mapping</span>
+    </button>
+    <button *ngIf="isAdmin" mat-button id="item3" routerLink="/admin">
+      <div class="icon-container">
+        <mat-icon class="small-icon">admin_panel_settings</mat-icon>
+      </div>
+      <span>Admin</span>
+    </button>
+    <button *ngIf="isTPM" mat-button id="item3" routerLink="/usttpm">
+      <div class="icon-container">
+        <mat-icon class="small-icon">admin_panel_settings</mat-icon>
+      </div>
+      <span>USTTPM</span>
+    </button>
+
+    <div [matMenuTriggerFor]="profileMenu" id="item8">
+      <div class="icon-container" style="display: flex;">
+        <span class="username">{{(UserName.length>10)? (UserName | slice:0:10)+'...':(UserName)}} <br><span
+            class="role">logged in as @ {{roleName}}</span></span><mat-icon class="small-icon1"
+          style="cursor: pointer;">account_circle</mat-icon>
+      </div>
+
+    </div>
+
+    <mat-menu #profileMenu="matMenu">
+      <button style="padding-top: 30px;" *ngIf="ChangePW" mat-menu-item routerLink="/ChangePassword">
+        Change Password
+      </button>
+
+      <button *ngIf="!this.drawer.opened" mat-menu-item (click)="logout()">
+        Logout
+      </button>
+      <button *ngIf="this.drawer.opened" mat-menu-item (click)="logout();drawer.toggle()">
+        Logout
+      </button>
+    </mat-menu>
+  </div>
+  
+</mat-toolbar>
+
+<mat-drawer-container class="example-container" >
+  <mat-drawer #drawer mode="side">
+    <div class="vertical-icons">
+      <div *ngIf="dashboard" class="icon-with-text" routerLink="/dashboard">
+        <mat-icon class="small-icon-side">computer</mat-icon>
+        <span>Dashboard</span>
+      </div>
+      <div *ngIf="sow" class="icon-with-text" routerLink="/sow">
+        <mat-icon class="small-icon-side">explore</mat-icon>
+        <span>SO</span>
+      </div>
+      <div *ngIf="candidatedetails" class="icon-with-text" routerLink="/candidatedetails">
+        <mat-icon class="small-icon-side">person</mat-icon>
+        <span>Candidate</span>
+      </div>
+      <div *ngIf="mapping" class="icon-with-text" routerLink="/mapping">
+        <mat-icon class="small-icon-side">group_work</mat-icon>
+        <span>Mapping</span>
+      </div>
+
+      <div *ngIf="isAdmin" class="icon-with-text" routerLink="/admin">
+        <mat-icon class="small-icon-side">admin_panel_settings</mat-icon>
+        <span>Admin</span>
+      </div>
+      <div *ngIf="isTPM" class="icon-with-text" routerLink="/usttpm">
+        <mat-icon class="small-icon-side">admin_panel_settings</mat-icon>
+        <span>USTTPM</span>
+      </div>
+      <div class="icon-with-text" (click)="logout()"  > 
+        <mat-icon class="small-icon-side">exit_to_app</mat-icon>
+        <span>Log Out</span>
+      </div>
+    </div>
+  </mat-drawer>
+  <mat-drawer-content>
+    <router-outlet></router-outlet>
+  </mat-drawer-content>
+</mat-drawer-container> -->
+
+<mat-drawer-container  class="example-container"  *ngIf="!IsfirstLogin" >
+  <mat-drawer #drawer mode="side" opened  >
+  <div>   
+  <span class="ustlogo"><img  src="../../assets/ustlogo.png"></span>&nbsp;
+  <span class="sowimg"><img style=" margin-left: 30px;" src="../../assets/ust_cropped.png"></span>
+  <div (click)="openDialog()" style="cursor: pointer;">
+   
+  <span  class="username" ><strong><img  class = "profile-icon" src="{{image}}" style="margin-left: -30px; cursor: pointer;" >{{(UserName.length>10)? (UserName | slice:0:10)+'...':(UserName)}}</strong> </span>
+  </div>
+  </div>
+  <div class="vertical-icons">
+  <div *ngIf="dashboard" class="icon-with-text" routerLink="/dashboard">
+  <mat-icon class="small-icon-side">computer</mat-icon>
+  <span class="heading">Dashboard</span>
+  </div>
+  <div *ngIf="sow" class="icon-with-text" routerLink="/sow">
+  <mat-icon class="small-icon-side">explore</mat-icon>
+  <span class="heading">SO</span>
+  </div>
+  <div *ngIf="candidatedetails" class="icon-with-text" routerLink="/candidatedetails">
+  <mat-icon class="small-icon-side">person</mat-icon>
+  <span class="heading">Candidate</span>
+  </div>
+  <div *ngIf="mapping" class="icon-with-text" routerLink="/mapping">
+  <mat-icon class="small-icon-side">group_work</mat-icon>
+  <span class="heading">Mapping</span>
+  </div>
+   
+        <div *ngIf="isAdmin" class="icon-with-text" routerLink="/admin">
+  <mat-icon class="small-icon-side">admin_panel_settings</mat-icon>
+  <span class="heading">Admin</span>
+  </div>
+  <div *ngIf="isTPM" class="icon-with-text" routerLink="/usttpm">
+  <mat-icon class="small-icon-side">admin_panel_settings</mat-icon>
+  <span class="heading">USTTPM</span>
+  </div>
+  <div *ngIf="ChangePW" class="icon-with-text" routerLink="/ChangePassword">
+  <mat-icon class="small-icon-side">lock_open</mat-icon>
+  <span class="heading">Change Password</span>
+  </div>
+  <div class="icon-with-text"  (click)="logout()">
+  <mat-icon class="small-icon-side">exit_to_app</mat-icon>
+  <span class="heading">Log Out</span>
+  </div>
+  </div>
+  </mat-drawer>
+  <mat-drawer-content>
+  <router-outlet></router-outlet>
+  </mat-drawer-content>
+  </mat-drawer-container>
+
+
+
+
+  <ng-template #modalContent>
+    <div class="modal-container" style="padding: 40px;">
+      <img class="pp" src="{{image}}">
+      <br><br>
+      <mat-card-content >
+        <div class="example-container1">
+
+          <mat-form-field>
+            <input matInput [(ngModel)]='User.EmailId' readonly>
+          </mat-form-field>
+          <mat-form-field>
+            <input matInput [(ngModel)]='User.LoginName'>
+          </mat-form-field>
+          <mat-form-field>
+            <input matInput [(ngModel)]='User.MobileNo'>
+          </mat-form-field>
+          <mat-form-field class="columns">
+            <mat-label *ngIf="fileInput.value; else newFile">{{fileInput.value}}</mat-label>
+            <ng-template #newFile>
+                <mat-label>Choose Image</mat-label>
+            </ng-template>
+            <input matInput>
+            <button mat-icon-button matSuffix (click)="fileInput.click()">
+                <mat-icon>attach_file</mat-icon>
+            </button>
+            <input hidden (change)="onImageSelected($event)" #fileInput type="file" id="file">
+            
+        </mat-form-field>
+        
+         
+        </div>
+        <button  mat-raised-button color="primary"  (click)="UpdateLoginData(User)" style="margin-left: 70px;">Edit Profile</button>
+        
+      </mat-card-content>
+    
+    </div>
+  </ng-template>

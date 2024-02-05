@@ -1,0 +1,232 @@
+<div class="mapcandidate">
+  <mat-card class="candidatemappingcard">
+   
+    <div class="btngrp">
+      <button *ngIf="isAdmin" id="btn" mat-raised-button color="primary" (click)="openModal()">
+        <mat-icon style="margin-top:1px;">add</mat-icon>Map SO
+        Candidate
+      </button>
+      <h1>SO-CANDIDATE MAPPING</h1>
+      <button id="btn" style="float:right" mat-raised-button color="accent" (click)="DownloadExcel()">
+        <mat-icon style="margin-top: 3px;">download</mat-icon>Download
+        Excel
+      </button>
+      
+      <button id="btn" mat-raised-button (click)="toggleFormVisibility()">Filters
+        <mat-icon style="margin-top:1px;">filter_list</mat-icon>
+      </button>
+    </div>
+    <div class="nav" fxLayout="row" fxLayoutGap="10px" *ngIf="isFormVisible">
+      <mat-form-field #soBlock>
+        <mat-label>Search by Domain Name</mat-label>
+        <input #soNameVar matInput (keyup)="customFilter()" placeholder="Ex. Mia">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+      <mat-form-field #candidateBlock>
+        <mat-label>Search by Candidate Name</mat-label>
+        <input #candidateNameVar matInput (keyup)="customFilter()" placeholder="Ex. Mia">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Select by status</mat-label>
+        <mat-select [(ngModel)]="selectedStatus" (selectionChange)="customFilter()">
+          <mat-option selected value="">none</mat-option>
+          <mat-option *ngFor="let status of StatusData" [value]="status.statusName">
+            {{status.statusName}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <mat-card-content>
+      <div class="table-container" style="margin-top: -20px;">
+        <table mat-table [dataSource]="dataSource" matSort>
+          <!-- SOName Column -->
+          <ng-container matColumnDef="soName">
+            <th mat-header-cell *matHeaderCellDef class="center-align" matTooltip="Sort by SO Name" mat-sort-header style="font-size: 14px;" >
+              Domain Name
+            </th>
+            <td mat-cell *matCellDef="let row" class="center-align" style="width:250px">
+              <div *ngIf="!row.isEditing" (dblclick)="applyEdit(row)">
+                {{row.soName}}
+              </div>
+              <div *ngIf="row.isEditing">
+
+                <mat-form-field>
+                  <mat-label>Select SO</mat-label>
+                  <mat-select [(ngModel)]="row.sowId">
+                    <mat-option *ngFor="let sow of SOData" [value]="sow.sowId">
+                      {{sow.soName}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+            </td>
+          </ng-container>
+          <!-- candidateName Column -->
+          <ng-container matColumnDef="candidateName">
+            <th mat-header-cell *matHeaderCellDef class="center-align" matTooltip="Sort by Candidate Name"
+              mat-sort-header>
+              Candidate Name
+            </th>
+            <td mat-cell *matCellDef="let row" class="center-align" style="width:250px">
+              <div *ngIf="!row.isEditing" (dblclick)="applyEdit(row)">
+                {{row.candidateName}}
+              </div>
+              <div *ngIf="row.isEditing">
+                <mat-form-field>
+                  <mat-label>Select Candidate Name</mat-label>
+                  <mat-select [(ngModel)]="row.candidateId">
+                    <mat-option *ngFor="let candidate of CandidateData" [value]="candidate.candidateId">
+                      {{candidate.candidateName}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+            </td>
+          </ng-container>
+          <!--Mapping Date-->
+
+
+          <ng-container matColumnDef="mappingDate">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> OnBoarding Date </th>
+            <td mat-cell *matCellDef="let row" class="truncate-cell">
+              <div *ngIf="!row.isEditing">
+                {{row.mappingDate|date:'dd/MM/yyyy'}}
+              </div>
+              <div *ngIf="row.isEditing">
+                <mat-form-field>
+                  <mat-label>Select OnBoarding Date</mat-label>
+                  <input matInput [matDatepicker]="picker2" [(ngModel)]="row.mappingDate">
+                  <mat-hint>MM/DD/YYYY</mat-hint>
+                  <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
+                  <mat-datepicker #picker2></mat-datepicker>
+                </mat-form-field>
+              </div>
+            </td>
+          </ng-container>
+          <!-- status Column -->
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef class="center-align" mat-sort-header>
+              Status
+            </th>
+            <td mat-cell *matCellDef="let row" class="center-align" style="width:250px">
+              <div *ngIf="!row.isEditing" (dblclick)="applyEdit(row)">
+                {{row.statusName}}
+              </div>
+              <div *ngIf="row.isEditing">
+                <mat-form-field>
+                  <mat-label>Select status</mat-label>
+                  <mat-select [(ngModel)]="row.statusId">
+                    <mat-option *ngFor="let status of StatusData" [value]="status.statusId">
+                      {{status.statusName}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </td>
+          </ng-container>
+          <!-- actions Column -->
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef class="center-align"><b> Actions</b> </th>
+            <td mat-cell *matCellDef="let row" style="width:250px">
+              <div *ngIf="!row.isEditing" class="center-align">
+                <button mat-icon-button color="primary" matTooltip="Edit Candidate" (click)="applyEdit(row)"
+                  matTooltipPosition="right">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" matTooltip="Delete Candidate" (click)="deleteDetails(row)"
+                  matTooltipPosition="right">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+              <div *ngIf="row.isEditing">
+                <button mat-icon-button color="primary" matTooltip="Save Changes" matTooltipPosition="right"
+                  (click)="UpdateCandidate(row)">
+                  <mat-icon>check_circle</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" matTooltip="Cancel" matTooltipPosition="right"
+                  (click)="cancelEdit(row)">
+                  <mat-icon>cancel</mat-icon>
+                </button>
+              </div>
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          <!-- Row shown when there is no matching data. -->
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell" colspan="4">No data matching the filter</td>
+          </tr>
+        </table>
+      </div>
+    </mat-card-content>
+  </mat-card>
+  <mat-paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users"></mat-paginator>
+
+
+
+  <ng-template #modalContent>
+    <div class="modal-container" style="width: 350px;">
+      <h2>Add Candidate-Mapping</h2>
+      <form [formGroup]="mapppingForm" #formDirective="ngForm">
+
+        <mat-form-field>
+
+          <mat-label>Select a SO</mat-label>
+          <input matInput placeholder="Select a SO" [formControl]="SOControl" [matAutocomplete]="SOAuto">
+
+          <mat-autocomplete #SOAuto="matAutocomplete" (optionSelected)="onOptionSelectedSO($event)">
+            <mat-option *ngFor="let sO of filteredSO" [value]="sO.soName">{{sO.soName}}</mat-option>
+          </mat-autocomplete>
+          <div *ngIf="(SOControl.touched) && (SOControl.invalid)" class="text-danger">
+            <mat-error *ngIf="SOControl.hasError('required')"><small>*SO Name is required</small></mat-error>
+          </div>
+        </mat-form-field>
+        <mat-form-field>
+
+          <mat-label>Select a Candidate</mat-label>
+          <input id="candidateId"  matInput placeholder="Select a Candidate" [formControl]="CandidateControl" [matAutocomplete]="CandidateAuto">
+
+          <mat-autocomplete #CandidateAuto="matAutocomplete" (optionSelected)="onOptionSelectedCandidate($event)">
+            <mat-option *ngFor="let candidate of filteredCandidate" [value]="candidate.candidateName">{{candidate.candidateName}}</mat-option>
+          </mat-autocomplete>
+          <div *ngIf="(CandidateControl.touched) && (CandidateControl.invalid)" class="text-danger">
+            <mat-error *ngIf="CandidateControl.hasError('required')"><small>*CandidateName is required</small></mat-error>
+          </div>
+        </mat-form-field>
+
+
+
+        <mat-form-field>
+          <mat-label>Select a Status</mat-label>
+          <mat-select id="statusId" name="statusId" formControlName="statusId">
+            <mat-option *ngFor="let status of StatusData" value="{{status.statusId}}">{{status.statusName}}</mat-option>
+          </mat-select>
+          <div *ngIf="(f.statusId.touched ) && (f.statusId.invalid)" class="text-danger">
+            <mat-error *ngIf="f.statusId.errors?.['required']"><small>*Status is required</small></mat-error>
+          </div>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Select a OnBoarding Date</mat-label>
+          <input matInput [matDatepicker]="picker" placeholder=" Select OnBoarding Date" formControlName="mappingDate">
+          <mat-hint align="end"><small>MM/DD/YYYY</small></mat-hint>
+          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker touchUi #picker></mat-datepicker>
+          <div *ngIf="(f.mappingDate.touched ) && (f.mappingDate.invalid)" class="text-danger">
+            <mat-error *ngIf="mapppingForm.controls['mappingDate'].hasError('required')">
+              <small>*OnBoarding date is required</small>
+            </mat-error>
+          </div>
+
+
+        </mat-form-field>
+
+        <button mat-raised-button color="accent" (click)="closeModal(formDirective)">Close</button>
+        <button mat-raised-button color="primary" (click)="onSubmit(formDirective)">Submit</button>
+      </form>
+    </div>
+  </ng-template>
+</div>
